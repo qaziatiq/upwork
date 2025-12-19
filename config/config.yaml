@@ -1,0 +1,206 @@
+# Upwork Automation Configuration
+
+# Scheduler settings
+scheduler:
+  # How often to run the job search (in minutes)
+  interval_minutes: 60
+  # Time window to run (optional - leave empty to run 24/7)
+  active_hours:
+    start: "09:00"
+    end: "18:00"
+  timezone: "Australia/Sydney"
+
+# Search parameters
+search:
+  # Keywords to search for
+  keywords:
+    - "python developer"
+    - "web scraping"
+    - "automation"
+  # Category filter (optional)
+  category: "Web, Mobile & Software Dev"
+  # Experience level filter: entry, intermediate, expert
+  experience_levels:
+    - "intermediate"
+    - "expert"
+  # Job type: hourly, fixed
+  job_types:
+    - "hourly"
+    - "fixed"
+  # Client history filter
+  client_history:
+    min_jobs_posted: 1
+    min_hire_rate: 0  # percentage
+    min_total_spent: 0  # in dollars
+  # Budget filters
+  budget:
+    min_hourly: 25
+    max_hourly: 150
+    min_fixed: 100
+    max_fixed: 10000
+  # Posted within (hours)
+  posted_within_hours: 24
+  # Number of results to fetch per search
+  max_results: 20
+
+# Ranking criteria (weights should sum to 1.0)
+ranking:
+  # Minimum score threshold (0-100) to generate a proposal
+  threshold: 60
+  weights:
+    # How well the job matches your skills
+    skills_match: 0.25
+    # Budget attractiveness
+    budget_score: 0.20
+    # Client quality (hire rate, feedback, payment verified)
+    client_quality: 0.20
+    # Job clarity and description quality
+    job_clarity: 0.15
+    # Competition level (fewer proposals = better)
+    competition: 0.10
+    # Recency of posting
+    recency: 0.10
+  
+  # Your skills for matching
+  my_skills:
+    - "python"
+    - "web scraping"
+    - "automation"
+    - "selenium"
+    - "playwright"
+    - "api development"
+    - "data extraction"
+    - "flask"
+    - "django"
+    - "fastapi"
+
+# Proposal settings
+proposal:
+  # Template file to use
+  template: "templates/default_proposal.j2"
+  # Output directory for generated proposals
+  output_directory: "proposals"
+  # Include job details in saved file
+  include_job_details: true
+  # Maximum proposals per run
+  max_proposals_per_run: 5
+
+# Logging
+logging:
+  level: "INFO"
+  file: "logs/upwork_automation.log"
+  max_size_mb: 10
+  backup_count: 5
+
+# AI Configuration
+ai:
+  enabled: true
+  # OpenAI-compatible API endpoint (change for local LLMs or other providers)
+  # For Ollama: "http://localhost:11434/v1"
+  # For OpenAI: "https://api.openai.com/v1"
+  base_url: "https://api.openai.com/v1"
+  model: "gpt-4o-mini"  # or "gpt-4o", "gpt-3.5-turbo", "llama3" (Ollama), etc.
+  max_tokens: 2000
+  
+  # Ranking mode: "parallel", "batch", or "sequential"
+  # - parallel: Process jobs concurrently (faster, more API calls)
+  # - batch: Multiple jobs per API call (cheaper, needs larger context)
+  # - sequential: One job at a time (slowest, most reliable)
+  ranking_mode: "parallel"
+  max_concurrent: 5  # For parallel mode
+  batch_size: 5      # For batch mode
+  
+  # Your experience summary (used in prompts)
+  my_experience: |
+    I am an experienced developer with expertise in Python, web scraping, 
+    automation, and building robust data pipelines. I have completed 50+ 
+    projects on Upwork with a 5-star rating.
+  
+  # System prompt for AI ranking
+  ranking_system_prompt: |
+    You are an expert freelancer consultant who analyzes job postings to determine 
+    how well they match a freelancer's skills and whether they're worth pursuing.
+    
+    You must respond with valid JSON in this exact format:
+    {
+      "score": <number 0-100>,
+      "reasoning": "<brief explanation>",
+      "strengths": ["<strength 1>", "<strength 2>"],
+      "concerns": ["<concern 1>", "<concern 2>"],
+      "recommendation": "<pursue/consider/skip>"
+    }
+    
+    Scoring guidelines:
+    - 80-100: Excellent match, high-quality client, good budget
+    - 60-79: Good match, worth pursuing with some considerations
+    - 40-59: Moderate match, may require extra effort
+    - 0-39: Poor match, likely not worth the time
+  
+  # User prompt template for ranking (variables will be substituted)
+  ranking_user_prompt: |
+    Analyze this job posting for me:
+    
+    **Job Title:** {job_title}
+    **Job Type:** {job_type}
+    **Budget:** {budget_info}
+    **Proposals:** {proposals_count} submitted
+    **Client Rating:** {client_rating}
+    **Client Total Spent:** ${client_spent}
+    
+    **Required Skills:** {required_skills}
+    
+    **Job Description:**
+    {job_description}
+    
+    ---
+    
+    **My Skills:** {my_skills}
+    
+    **My Experience:** {my_experience}
+    
+    ---
+    
+    Analyze how well this job matches my profile and provide a score with reasoning.
+  
+  # System prompt for proposal generation
+  proposal_system_prompt: |
+    You are an expert freelance proposal writer. Write compelling, personalized 
+    proposals that:
+    - Open with a hook that shows you understand the client's problem
+    - Demonstrate relevant experience without being boastful
+    - Propose a clear approach to solving their problem
+    - Include 1-2 clarifying questions to show engagement
+    - End with a clear call to action
+    
+    Keep proposals concise (150-250 words) and professional but friendly.
+    Do NOT use generic phrases like "I am the perfect fit" or "I am confident."
+    Be specific and reference actual details from the job posting.
+  
+  # User prompt template for proposal generation
+  proposal_user_prompt: |
+    Write a proposal for this job:
+    
+    **Job Title:** {job_title}
+    **Job Type:** {job_type}
+    **Budget:** {budget_info}
+    
+    **Required Skills:** {required_skills}
+    
+    **Job Description:**
+    {job_description}
+    
+    ---
+    
+    **My Skills:** {my_skills}
+    
+    **My Experience:** {my_experience}
+    
+    **Why this is a good match (from analysis):**
+    - Score: {ranking_score}/100
+    - Reasoning: {ranking_reasoning}
+    - Strengths: {matching_strengths}
+    
+    ---
+    
+    Write a personalized, compelling proposal that highlights my relevant 
+    experience and proposes a clear approach to the project.

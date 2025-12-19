@@ -1,0 +1,109 @@
+# Proposal for: {{ job.title }}
+
+## Job Details
+- **URL**: {{ job.url }}
+- **Type**: {{ job.job_type | capitalize }}
+{% if job.job_type == 'hourly' and job.budget_min %}
+- **Rate**: ${{ job.budget_min }} - ${{ job.budget_max }}/hr
+{% elif job.fixed_price %}
+- **Budget**: ${{ job.fixed_price }}
+{% endif %}
+- **Posted**: {{ job.posted_at.strftime('%Y-%m-%d %H:%M') if job.posted_at else 'Unknown' }}
+- **Proposals**: {{ job.proposals_count }}
+- **Experience Level**: {{ job.experience_level | capitalize }}
+{% if job.duration %}
+- **Duration**: {{ job.duration }}
+{% endif %}
+
+## Required Skills
+{{ job.required_skills | join(', ') if job.required_skills else 'None specified' }}
+
+---
+
+## Client Information
+| Attribute | Value |
+|-----------|-------|
+| Payment Verified | {{ '✓ Yes' if job.client.payment_verified else '✗ No' }} |
+| Total Spent | ${{ '{:,.2f}'.format(job.client.total_spent) if job.client.total_spent else '0.00' }} |
+| Rating | {{ job.client.rating if job.client.rating else 'N/A' }}/5.0 |
+| Reviews | {{ job.client.reviews_count }} |
+| Country | {{ job.client.country if job.client.country else 'Unknown' }} |
+| Jobs Posted | {{ job.client.jobs_posted }} |
+| Hire Rate | {{ job.client.hire_rate }}% |
+
+---
+
+## Job Score Analysis
+
+**Overall Score: {{ score }}/100** {% if score >= 80 %}🟢{% elif score >= 60 %}🟡{% else %}🔴{% endif %}
+
+| Criteria | Score | Weight | Contribution |
+|----------|-------|--------|--------------|
+{% for key, value in score_breakdown.items() %}
+| {{ key | replace('_', ' ') | title }} | {{ value }}/100 | {{ (ranked_job.job.score_breakdown[key] if ranked_job else 0) }} | {{ (value * 0.2) | round(1) }} |
+{% endfor %}
+
+---
+
+## Skills Match
+
+**Your Matching Skills:** {{ matching_skills | join(', ') if matching_skills else 'No direct matches' }}
+
+{% if matching_skills %}
+✓ You have {{ matching_skills | length }} relevant skill(s) for this job
+{% else %}
+⚠ Consider if this job aligns with your expertise
+{% endif %}
+
+---
+
+## Job Description
+
+{{ job.description }}
+
+---
+
+## PROPOSAL DRAFT
+
+> **Instructions:** Edit the sections below to personalize your proposal
+
+### Opening
+
+Hi there,
+
+I read through your project requirements for "{{ job.title }}" and I'm confident I can help you achieve your goals.
+
+### Relevant Experience
+
+{% if matching_skills %}
+I have hands-on experience with {{ matching_skills[:3] | join(', ') }}, which are directly relevant to your project.
+{% endif %}
+
+[Add 1-2 specific examples of similar work you've done]
+
+### Proposed Approach
+
+Based on your requirements, here's how I would approach this:
+
+1. **Discovery Phase**: [Describe initial analysis]
+2. **Implementation**: [Describe your approach]
+3. **Delivery**: [Describe deliverables and timeline]
+
+### Questions
+
+Before we proceed, I'd like to clarify:
+
+- [Question about scope or requirements]
+- [Question about timeline or priorities]
+
+### Closing
+
+I'm available to start immediately and would love to discuss this project in more detail.
+
+Best regards,
+[Your Name]
+
+---
+
+*Generated: {{ generated_at.strftime('%Y-%m-%d %H:%M:%S') }}*
+*Job ID: {{ job.id }}*

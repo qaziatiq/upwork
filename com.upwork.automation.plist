@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+    <key>Label</key>
+    <string>com.upwork.automation</string>
+    
+    <key>ProgramArguments</key>
+    <array>
+        <!-- Update this path to your Python virtual environment -->
+        <string>/Users/qatiq/CascadeProjects/windsurf-project-2/upwork-automation/venv/bin/python</string>
+        <string>/Users/qatiq/CascadeProjects/windsurf-project-2/upwork-automation/main.py</string>
+    </array>
+    
+    <key>WorkingDirectory</key>
+    <string>/Users/qatiq/CascadeProjects/windsurf-project-2/upwork-automation</string>
+    
+    <key>RunAtLoad</key>
+    <true/>
+    
+    <key>KeepAlive</key>
+    <true/>
+    
+    <key>StandardOutPath</key>
+    <string>/Users/qatiq/CascadeProjects/windsurf-project-2/upwork-automation/logs/launchd.stdout.log</string>
+    
+    <key>StandardErrorPath</key>
+    <string>/Users/qatiq/CascadeProjects/windsurf-project-2/upwork-automation/logs/launchd.stderr.log</string>
+    
+    <key>EnvironmentVariables</key>
+    <dict>
+        <key>PATH</key>
+        <string>/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin</string>
+    </dict>
+</dict>
+</plist>

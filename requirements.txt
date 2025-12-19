@@ -1,0 +1,27 @@
+# Browser automation
+playwright>=1.57.0
+
+# Scheduling
+apscheduler==3.10.4
+
+# Configuration
+pyyaml==6.0.1
+
+# Environment variables
+python-dotenv==1.0.0
+
+# Logging
+loguru==0.7.2
+
+# Text processing
+jinja2==3.1.2
+
+# HTTP requests (for AI API calls)
+httpx==0.25.2
+
+# Data handling
+pydantic==2.5.2
+pydantic-settings==2.1.0
+
+# Timezone support
+pytz==2024.1
