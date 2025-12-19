@@ -33,7 +33,12 @@ playwright install chromium
 
 ```bash
 cp .env.example .env
-# Edit .env with your Upwork credentials
+```
+
+Edit `.env` with your actual Upwork credentials:
+```
+UPWORK_USERNAME=your_actual_email@domain.com
+UPWORK_PASSWORD=your_actual_password
 ```
 
 ### 3. Customize Configuration
@@ -44,21 +49,67 @@ Edit `config/config.yaml` to set:
 - Your skills for matching
 - Scheduler interval
 
-### 4. Test the Setup
+### 4. First-Time Login Setup (Important!)
 
+Upwork uses Cloudflare bot protection. To bypass it, you must log in using your real Chrome browser:
+
+**Step 1: Close all Chrome windows**
+
+**Step 2: Start Chrome with remote debugging**
+```bash
+/Applications/Google\ Chrome.app/Contents/MacOS/Google\ Chrome --remote-debugging-port=9222 --user-data-dir=/tmp/chrome-debug
+```
+
+**Step 3: Log in to Upwork manually**
+- In the Chrome window that opens, go to https://www.upwork.com
+- Log in with your credentials
+- Complete any 2FA/captcha verification
+
+**Step 4: Verify the connection**
+```bash
+python main.py --login
+```
+
+This connects to your authenticated Chrome session.
+
+### 5. Test the Setup
+
+With Chrome still running (from step 4):
 ```bash
 python main.py --test
 ```
 
-### 5. Run the Service
+This will:
+- Verify configuration is loaded
+- Connect to your Chrome browser
+- Check you're logged in
+- Run a test job search
 
+### 6. Run the Service
+
+**Option A: Keep Chrome running in background**
 ```bash
-# Run as a scheduled service
-python main.py
+# Start Chrome with debugging (keep this terminal open)
+/Applications/Google\ Chrome.app/Contents/MacOS/Google\ Chrome --remote-debugging-port=9222 --user-data-dir=/tmp/chrome-debug
 
-# Or run a single search cycle
+# In another terminal, run the service
+python main.py          # Scheduled service
+python main.py --once   # Single search cycle
+```
+
+**Option B: Use Playwright's browser (may trigger Cloudflare)**
+```bash
 python main.py --once
 ```
+
+## Command Reference
+
+| Command | Description |
+|---------|-------------|
+| `python main.py --login` | Connect to Chrome and verify login |
+| `python main.py --test` | Test configuration and connection |
+| `python main.py --once` | Run single search cycle |
+| `python main.py` | Run as scheduled service |
 
 ## Configuration
 
@@ -178,14 +229,25 @@ upwork-automation/
 
 ## Troubleshooting
 
+**Cloudflare blocking / Bot detection:**
+- Use the Chrome CDP method (see Step 4 above)
+- Make sure Chrome is started with `--remote-debugging-port=9222`
+- Log in manually in Chrome before running the script
+
+**"Could not connect to Chrome CDP" error:**
+- Close ALL Chrome windows first
+- Start Chrome with: `/Applications/Google\ Chrome.app/Contents/MacOS/Google\ Chrome --remote-debugging-port=9222 --user-data-dir=/tmp/chrome-debug`
+- Make sure no other process is using port 9222
+
 **Login fails:**
 - Check credentials in `.env`
 - Delete `browser_state/` and try again
-- Run with `--test` to see detailed output
+- Use Chrome CDP method instead of Playwright browser
 
 **No jobs found:**
 - Expand search filters in `config.yaml`
 - Check if keywords are too specific
+- Verify you're logged in by checking the browser window
 
 **Proposals not generated:**
 - Lower the `ranking.threshold` value
