@@ -182,15 +182,22 @@ class UpworkClient:
             return True
         return await self.login()
     
-    async def search_jobs(self, keyword: str) -> list[JobPosting]:
-        """Search for jobs matching the keyword"""
+    async def search_jobs(self, keyword: str, search_profile=None) -> list[JobPosting]:
+        """
+        Search for jobs matching the keyword
+        
+        Args:
+            keyword: The search keyword
+            search_profile: Optional SearchProfileConfig to use instead of the default search config
+        """
         logger.info(f"Searching for jobs: {keyword}")
         
         if not await self.ensure_logged_in():
             logger.error("Cannot search - not logged in")
             return []
         
-        search_config = self.config.search
+        # Use the provided search profile if available, otherwise use the default search config
+        search_config = search_profile if search_profile else self.config.search
         jobs = []
         
         try:

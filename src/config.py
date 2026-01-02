@@ -1,7 +1,7 @@
 """Configuration management for Upwork Automation"""
 import os
 from pathlib import Path
-from typing import Optional
+from typing import Optional, List
 
 import yaml
 from pydantic import BaseModel, Field
@@ -37,6 +37,12 @@ class SearchConfig(BaseModel):
     budget: BudgetConfig = BudgetConfig()
     posted_within_hours: int = 24
     max_results: int = 20
+
+
+# New class for search profiles
+class SearchProfileConfig(SearchConfig):
+    name: str = ""
+    enabled: bool = True
 
 
 class RankingWeights(BaseModel):
@@ -86,6 +92,7 @@ class AIConfig(BaseModel):
 class AppConfig(BaseModel):
     scheduler: SchedulerConfig = SchedulerConfig()
     search: SearchConfig = SearchConfig()
+    search_profiles: List[SearchProfileConfig] = []  # New field for search profiles
     ranking: RankingConfig = RankingConfig()
     proposal: ProposalConfig = ProposalConfig()
     logging: LoggingConfig = LoggingConfig()

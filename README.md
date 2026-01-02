@@ -129,6 +129,43 @@ search:
   posted_within_hours: 24
 ```
 
+### Multiple Search Profiles
+
+You can define multiple search profiles with different parameters to target specific niches:
+
+```yaml
+search_profiles:
+  - name: "Python Development"
+    enabled: true
+    keywords:
+      - "python developer"
+      - "python programmer"
+    experience_levels:
+      - "intermediate"
+      - "expert"
+    budget:
+      min_hourly: 30
+      max_hourly: 150
+    # other parameters...
+    
+  - name: "Web Scraping"
+    enabled: true
+    keywords:
+      - "web scraping"
+      - "data extraction"
+    experience_levels:
+      - "expert"
+    job_types:
+      - "fixed"
+      - "hourly"
+    budget:
+      min_hourly: 25
+      max_hourly: 100
+    # other parameters...
+```
+
+Each profile can have its own set of parameters and filters. Profiles can be enabled/disabled with the `enabled` flag without removing them from the configuration.
+
 ### Ranking Weights
 
 Adjust weights to prioritize what matters most to you (must sum to 1.0):

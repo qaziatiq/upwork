@@ -49,17 +49,40 @@ class UpworkAutomationService:
         
         try:
             async with UpworkClient() as client:
-                # Search for each keyword
-                for keyword in self.config.search.keywords:
-                    self.logger.info(f"Searching for: {keyword}")
+                # Use search profiles if available, otherwise use the legacy search config
+                search_profiles = self.config.search_profiles
+                if search_profiles:
+                    self.logger.info(f"Using {len([p for p in search_profiles if p.enabled])} search profiles")
                     
-                    try:
-                        jobs = await client.search_jobs(keyword)
-                        self.logger.info(f"Found {len(jobs)} jobs for '{keyword}'")
-                        all_jobs.extend(jobs)
-                    except Exception as e:
-                        self.logger.error(f"Error searching for '{keyword}': {e}")
-                        continue
+                    # Iterate through each enabled search profile
+                    for profile in [p for p in search_profiles if p.enabled]:
+                        self.logger.info(f"Processing search profile: {profile.name}")
+                        
+                        # Search for each keyword in this profile
+                        for keyword in profile.keywords:
+                            self.logger.info(f"Searching for: {keyword} (profile: {profile.name})")
+                            
+                            try:
+                                jobs = await client.search_jobs(keyword, profile)
+                                self.logger.info(f"Found {len(jobs)} jobs for '{keyword}' in profile '{profile.name}'")
+                                all_jobs.extend(jobs)
+                            except Exception as e:
+                                self.logger.error(f"Error searching for '{keyword}' in profile '{profile.name}': {e}")
+                                continue
+                else:
+                    # Legacy behavior - search for each keyword in the main search config
+                    self.logger.info("No search profiles defined, using legacy search config")
+                    
+                    for keyword in self.config.search.keywords:
+                        self.logger.info(f"Searching for: {keyword}")
+                        
+                        try:
+                            jobs = await client.search_jobs(keyword)
+                            self.logger.info(f"Found {len(jobs)} jobs for '{keyword}'")
+                            all_jobs.extend(jobs)
+                        except Exception as e:
+                            self.logger.error(f"Error searching for '{keyword}': {e}")
+                            continue
                 
                 if not all_jobs:
                     self.logger.warning("No jobs found in this cycle")

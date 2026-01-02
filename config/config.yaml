@@ -43,6 +43,81 @@ search:
   # Number of results to fetch per search
   max_results: 20
 
+# Search profiles - multiple search configurations with different parameters
+search_profiles:
+  - name: "Python Development"
+    enabled: true
+    keywords:
+      - "python developer"
+      - "python programmer"
+      - "python engineer"
+    category: "Web, Mobile & Software Dev"
+    experience_levels:
+      - "intermediate"
+      - "expert"
+    job_types:
+      - "hourly"
+      - "fixed"
+    client_history:
+      min_jobs_posted: 2
+      min_hire_rate: 50  # percentage
+      min_total_spent: 1000  # in dollars
+    budget:
+      min_hourly: 30
+      max_hourly: 150
+      min_fixed: 1000
+      max_fixed: 10000
+    posted_within_hours: 24
+    max_results: 15
+  
+  - name: "Web Scraping"
+    enabled: true
+    keywords:
+      - "web scraping"
+      - "data extraction"
+      - "web crawler"
+    category: "Web, Mobile & Software Dev"
+    experience_levels:
+      - "expert"
+    job_types:
+      - "fixed"
+      - "hourly"
+    client_history:
+      min_jobs_posted: 1
+      min_hire_rate: 30
+      min_total_spent: 500
+    budget:
+      min_hourly: 25
+      max_hourly: 120
+      min_fixed: 500
+      max_fixed: 5000
+    posted_within_hours: 48
+    max_results: 20
+
+  - name: "API Development"
+    enabled: false  # Disabled profile example
+    keywords:
+      - "api development"
+      - "rest api"
+      - "api integration"
+    category: "Web, Mobile & Software Dev"
+    experience_levels:
+      - "intermediate"
+      - "expert"
+    job_types:
+      - "hourly"
+    client_history:
+      min_jobs_posted: 3
+      min_hire_rate: 70
+      min_total_spent: 2000
+    budget:
+      min_hourly: 40
+      max_hourly: 180
+      min_fixed: 1500
+      max_fixed: 15000
+    posted_within_hours: 72
+    max_results: 10
+
 # Ranking criteria (weights should sum to 1.0)
 ranking:
   # Minimum score threshold (0-100) to generate a proposal
