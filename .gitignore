@@ -44,3 +44,4 @@ browser_state/
 # OS
 .DS_Store
 Thumbs.db
+/debug/

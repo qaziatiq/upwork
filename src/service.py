@@ -97,7 +97,39 @@ class UpworkAutomationService:
                         unique_jobs.append(job)
                 
                 self.logger.info(f"Total unique jobs found: {len(unique_jobs)}")
-                
+
+                # Save job data for debugging
+                import json
+                debug_dir = get_project_root() / "debug"
+                debug_dir.mkdir(exist_ok=True)
+                debug_file = debug_dir / f"jobs_{datetime.now().strftime('%Y%m%d_%H%M%S')}.json"
+
+                jobs_data = []
+                for job in unique_jobs:
+                    jobs_data.append({
+                        "id": job.id,
+                        "title": job.title,
+                        "url": job.url,
+                        "description": job.description[:200] + "..." if len(job.description) > 200 else job.description,
+                        "job_type": job.job_type,
+                        "budget_min": job.budget_min,
+                        "budget_max": job.budget_max,
+                        "fixed_price": job.fixed_price,
+                        "required_skills": job.required_skills,
+                        "proposals_count": job.proposals_count,
+                        "posted_at": job.posted_at.isoformat() if job.posted_at else None,
+                        "client": {
+                            "payment_verified": job.client.payment_verified,
+                            "rating": job.client.rating,
+                            "total_spent": job.client.total_spent,
+                            "country": job.client.country,
+                        }
+                    })
+
+                with open(debug_file, 'w') as f:
+                    json.dump(jobs_data, f, indent=2, default=str)
+                self.logger.info(f"Saved job data to: {debug_file}")
+
                 # Rank all jobs (using AI if enabled)
                 self.logger.info("Ranking jobs...")
                 if self.ai_engine.is_available:
